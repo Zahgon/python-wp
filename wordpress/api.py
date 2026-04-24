@@ -43,16 +43,7 @@ class WordPress(object):
         url : str
             WordPress instance URL.
         """
-        resp = requests.head(url)
-
-        # Search the Links for rel="https://api.w.org/".
-        wp_api_rel = resp.links.get('https://api.w.org/')
-
-        if wp_api_rel:
-            return wp_api_rel['url']
-        else:
-            # TODO: Rasie a better exception to the rel doesn't exist.
-            raise Exception
+        pass
 
     def _get(self, endpoint, params={}):
         """
@@ -72,16 +63,7 @@ class WordPress(object):
         dict/list
             Returns the data from the endpoint.
         """
-        url = urljoin(self.url, 'wp', self.version, endpoint)
-
-        resp = requests.get(url, params=params, headers=self.headers)
-
-        if not resp.status_code == 200:
-            msg = ('WordPress REST API returned the status code '
-                   '{0}.'.format(resp.status_code))
-            raise Exception(msg)
-
-        return resp.json()
+        pass
 
     def _post(self, endpoint, data={}, params={}):
         """
@@ -103,17 +85,7 @@ class WordPress(object):
         dict/list
             Returns the data from the endpoint.
         """
-        url = urljoin(self.url, 'wp', self.version, endpoint)
-
-        resp = requests.get(url, data=data, params=params,
-                            headers=self.headers)
-
-        if not resp.status_code == 200:
-            msg = ('WordPress REST API returned the status code '
-                   '{0}.'.format(resp.status_code))
-            raise Exception(msg)
-
-        return resp.json()
+        pass
 
     def _delete(self, endpoint, params={}):
         """
@@ -133,16 +105,7 @@ class WordPress(object):
         dict/list
             Returns the data from the endpoint.
         """
-        url = urljoin(self.url, 'wp', self.version, endpoint)
-
-        resp = requests.delete(url, params=params, headers=self.headers)
-
-        if not resp.status_code == 200:
-            msg = ('WordPress REST API returned the status code '
-                   '{0}.'.foramt(resp.status_code))
-            raise Exception(msg)
-
-        return resp.json()
+        pass
 
     # Post Methods
 
@@ -224,25 +187,7 @@ class WordPress(object):
         list
             A list of wordpress.models.Post.
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        if after:
-            after = after.isoformat()
-
-        if before:
-            before = before.isoformat()
-
-        if order not in ['asc', 'desc']:
-            raise ValueError("You can't order {0}.".format(order))
-
-        if orderby not in ['date', 'relevance', 'id', 'include', 'title',
-                           'slug']:
-            raise ValueError("You can't order by {0}.".format(orderby))
-
-        posts = self._get('posts', params=locals())
-
-        return Post.parse_list(self, posts)
+        pass
 
     def get_post(self, pk, context='view', password=None):
         """
@@ -268,9 +213,7 @@ class WordPress(object):
 
         wordpress.models.Post
         """
-        post = self._get('posts/{0}'.format(pk), params=locals())
-
-        return Post.parse(self, post)
+        pass
 
     def create_post(self, date=None, date_gmt=None, slug=None, status=None,
                     password=None, title=None, content=None, author=None,
@@ -285,7 +228,7 @@ class WordPress(object):
         ---------
 
         date : datetime
-            The date the object was published, in the site’s timezone.
+            The date the object was published, in the siteâ€™s timezone.
         date_gmt : datetime
             The date the object was published, as GMT.
         slug : str
@@ -333,9 +276,7 @@ class WordPress(object):
         liveblog_likes : str
             The number of Liveblog Likes the post has.
         """
-        post = self._post('posts', data=locals())
-
-        return Post.parse(self, post)
+        pass
 
     def update_post(self, pk, date=None, date_gmt=None, slug=None, status=None,
                     password=None, title=None, content=None, author=None,
@@ -352,7 +293,7 @@ class WordPress(object):
         pk : int
             The ID of the post you want to update.
         date : datetime
-            The date the object was published, in the site’s timezone.
+            The date the object was published, in the siteâ€™s timezone.
         date_gmt : datetime
             The date the object was published, as GMT.
         slug : str
@@ -400,9 +341,7 @@ class WordPress(object):
         liveblog_likes : str
             The number of Liveblog Likes the post has.
         """
-        post = self._post('posts/{0}'.format(pk), data=locals())
-
-        return Post.parse(self, post)
+        pass
 
     def delete_post(self, pk, force=False):
         """
@@ -416,12 +355,7 @@ class WordPress(object):
         force : bool
             Whether to bypass trash and force deletion.
         """
-        resp = self._delete('posts/{0}'.format(pk), params=locals())
-
-        if resp.status_code == 200:
-            return True
-        else:
-            raise Exception(resp.json())
+        pass
 
     # Post Reivion Methods
 
@@ -448,15 +382,7 @@ class WordPress(object):
         list
             A list of wordpress.models.PostRevision.
         """
-        if type(parent) == int:
-            parent_id = parent
-        elif type(parent) in [Page, Post]:
-            parent_id = parent.id
-
-        resp = self._get('posts/{0}/revisions'.format(parent_id),
-                         params=locals())
-
-        return PostRevision.parse_list(self, resp.json())
+        pass
 
     def get_post_revision(self, parent, pk, context='view'):
         """
@@ -482,15 +408,7 @@ class WordPress(object):
 
         wordpress.models.PostRevision
         """
-        if isinstance(parent, int):
-            parent_id = parent
-        elif isinstance(parent, Page) or isinstance(parent, Post):
-            parent_id = parent.id
-
-        resp = self._get('posts/{0}/revisions/{1}'.format(parent_id, pk),
-                         params=locals())
-
-        return PostRevision.parse(self, resp.json())
+        pass
 
     def delete_post_revision(self, parent, pk):
         """
@@ -509,14 +427,7 @@ class WordPress(object):
 
         dict
         """
-        if isinstance(parent, int):
-            parent_id = parent
-        elif isinstance(parent, Page) or isinstance(parent, Post):
-            parent_id = parent.id
-
-        resp = self._delete('posts/{0}/revisions/{1}'.format(parent_id, pk))
-
-        return PostRevision.parse(self, resp.json())
+        pass
 
     # Category Methods
 
@@ -582,30 +493,7 @@ class WordPress(object):
         list
             A list of wordpress.models.Category.
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        if order not in ['asc', 'desc']:
-            raise ValueError('The order {0} is not allowed.'.format(order))
-
-        if orderby not in ['id', 'include', 'name', 'slug', 'term_group',
-                           'description', 'count']:
-            raise ValueError('The order by {0} is not '
-                             'allowed.'.format(orderby))
-
-        if isinstance(parent, Category):
-            parent_id = Category.id
-        elif isinstance(parent, int):
-            parent_id = parent
-
-        if isinstance(post, Post):
-            post_id = Post.id
-        elif isinstance(post, int):
-            post_id = post
-
-        category_list = self._get('categories', params=locals())
-
-        return Category.parse_list(self, category_list)
+        pass
 
     def get_category(self, pk, context='view'):
         """
@@ -629,12 +517,7 @@ class WordPress(object):
 
         wordpress.models.Category
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        category = self._get('categories/{0}'.format(pk), params=locals())
-
-        return Category.parse(self, category)
+        pass
 
     # Tag Methods
 
@@ -699,19 +582,7 @@ class WordPress(object):
         list
             A list of wordpress.models.Category.
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        if order not in ['asc', 'desc']:
-            raise ValueError("You can't order {0}.".format(order))
-
-        if orderby not in ['id', 'include', 'name', 'slug', 'term_group',
-                           'description', 'count']:
-            raise ValueError("You can't order by {0}.".format(orderby))
-
-        tag_list = self._get('tags', params=locals())
-
-        return Category.parse_list(self, tag_list)
+        pass
 
     def get_tag(self, pk, context='view'):
         """
@@ -735,12 +606,7 @@ class WordPress(object):
 
         wordpress.models.Tag
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        tag = self._get('tags/{0}'.format(pk), params=locals())
-
-        return Tag.parse(self, tag)
+        pass
 
     def create_tag(self, **kwargs):
         raise NotImplementedError
@@ -858,12 +724,7 @@ class WordPress(object):
         list
             A list of wordpress.models.PostStatus
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        post_status_list = self._get('statuses', params=locals())
-
-        return PostStatus.parse_list(self, post_status_list)
+        pass
 
     def get_post_status(self, slug, context='view'):
         """
@@ -887,10 +748,7 @@ class WordPress(object):
 
         wordpress.models.PostStatus
         """
-        if context not in ['view', 'embed', 'edit']:
-            raise ValueError('The context {0} is not allowed.'.format(context))
-
-        post_status = self._get('statuses/{0}'.format(slug), params=locals())
+        pass
 
     # Setting Methods
 
@@ -934,4 +792,4 @@ class WordPress(object):
         posts_per_page : int
             Blog pages show at most.
         """
-        return self._post('settings', params=locals())
+        pass

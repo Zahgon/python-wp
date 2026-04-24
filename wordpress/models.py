@@ -14,7 +14,7 @@ class ResultSet(list):
         super(ResultSet, self).__init__()
 
     def ids(self):
-        return [item.id for item in self if hasattr(item, 'id')]
+        pass
 
 
 class Model(object):
@@ -43,13 +43,7 @@ class Model(object):
         """
         Prase a list of JSON objects into a result set of model instances.
         """
-        results = ResultSet()
-
-        for obj in json_list:
-            if obj:
-                results.append(cls.parse(api, obj))
-
-        return results
+        pass
 
     def __repr__(self):
         state = ['%s=%s' % (k, repr(v)) for (k, v) in vars(self).items()]
@@ -64,7 +58,7 @@ class Post(Model):
     ---------
 
     date : datetime
-        The date the object was published, in the site’s timezone.
+        The date the object was published, in the siteâ€™s timezone.
     date_gmt : datetime
         The date the object was published, as GMT.
     guid : dict
@@ -74,7 +68,7 @@ class Post(Model):
     link : str
         URL to the object.
     modified : datetime
-        The date the object was last modified, in the site’s timezone.
+        The date the object was last modified, in the siteâ€™s timezone.
     modified_gmt : datetime
         The date the object was last modified, as GMT.
     slug : str
@@ -118,52 +112,23 @@ class Post(Model):
     @classmethod
     def parse(cls, api, json):
         """Parse a JSON object into a model instance."""
-        post = cls(api)
-        setattr(post, '_json', json)
-
-        for k, v in json.items():
-            if k in ['date', 'date_gmt', 'modified', 'modified_gmt']:
-                setattr(post, k, parse_iso8601(v))
-
-            elif k == 'categories':
-                category_list = ResultSet()
-
-                for category in v:
-                    category_list.append(api.get_category(category))
-
-                setattr(post, k, category_list)
-
-            elif k == 'tags':
-                tag_list = ResultSet()
-
-                for tag in v:
-                    tag_list.append(api.get_tag(tag))
-
-                setattr(post, k, tag_list)
-
-            elif k == 'status':
-                setattr(post, k, api.get_post_status(v))
-
-            else:
-                setattr(post, k, v)
-
-        return post
+        pass
 
     def update(self, **kwargs):
         """Update the post."""
-        return self._api.update_post(self.id)
+        pass
 
     def delete(self, **kwargs):
         """Delete the post."""
-        return self._api.delete_post(self.id)
+        pass
 
     def revisions(self, **kwargs):
         """Lookup revisions of the post."""
-        return self._api.list_post_revisions(self.id)
+        pass
 
     def revision(self, pk, **kwargs):
         """Get a revision of the post."""
-        return self._api.get_post_revision(self.id, pk)
+        pass
 
     def __eq__(self, compare):
         """Compare two Posts."""
@@ -232,19 +197,10 @@ class PostRevision(Model):
 
     @classmethod
     def parse(cls, api, json):
-        post_revision = cls(api)
-        setattr(post_revision, '_json', json)
-
-        for k, v in json.items():
-            if k in ['date', 'date_gmt', 'modified', 'modified_gmt']:
-                setattr(post_revision, k, parse_iso8601(v))
-            else:
-                setattr(post_revision, k, v)
-
-        return post_revision
+        pass
 
     def destroy(self, **kwargs):
-        return self._api.delete_post_revision(self.id)
+        pass
 
     def __eq__(self, compare):
         """Compare two Posts."""
@@ -304,19 +260,13 @@ class Category(Model):
 
     @classmethod
     def parse(cls, api, json):
-        category = cls(api)
-        setattr(category, '_json', json)
-
-        for k, v in json.items():
-            setattr(category, k, v)
-
-        return category
+        pass
 
     def update(self, **kwargs):
-        return self._api.update_category(self.id)
+        pass
 
     def delete(self, **kwargs):
-        return self._api.delete_category(self.id)
+        pass
 
     def __eq__(self, compare):
         """Compare two Posts."""
@@ -371,19 +321,13 @@ class Tag(Model):
 
     @classmethod
     def parse(cls, api, json):
-        tag = cls(api)
-        setattr(tag, '_json', json)
-
-        for k, v in json.items():
-            setattr(tag, k, v)
-
-        return tag
+        pass
 
     def update(self, **kwargs):
-        return self._api.update_tag(self.id)
+        pass
 
     def delete(self, **kwargs):
-        return self._api.delete_tag(self.id)
+        pass
 
     def __eq__(self, compare):
         """Compare two Posts."""
@@ -456,13 +400,7 @@ class PostStatus(Model):
     """
     @classmethod
     def parse(cls, api, json):
-        post_status = cls(api)
-        setattr(post_status, '_json', json)
-
-        for k, v in json.items():
-            setattr(post_status, k, v)
-
-        return post_status
+        pass
 
     def __eq__(self, compare):
         """Compare two Posts."""
